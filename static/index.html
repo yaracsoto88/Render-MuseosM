@@ -18,10 +18,13 @@
     <script>
         const serverIP = "37.133.180.206";
         const serverPort = "8000";
-
-        function museoRandom() {
-            $.get(`http://${serverIP}:${serverPort}/random_museo`, function (data) {
+        async function museoRandom() {
+            try {
+                const response = await fetch(`/mostrar_museo/`);
+                console.log(response);
+                const data = await response.json();
                 var jsonObject = JSON.parse(data);
+
                 var html = `
             <div>
                 <h2>${jsonObject.attributes.NOMBRE}</h2>
@@ -37,39 +40,60 @@
         `;
 
                 document.getElementById("1").innerHTML = html;
-            });
+
+
+            } catch (error) {
+                console.error("Error al obtener museo:", error);
+            }
         }
 
-        function agruparPorBarrio() {
-            $.get(`http://${serverIP}:${serverPort}/barrios`, function (data) {
-                var jsonObject = JSON.parse(data);
-                var html = '<div>';
 
-                for (var barrio in jsonObject) {
-                    html += `
+
+
+        async function agruparPorBarrio() {
+            {
+                try {
+                    const response = await fetch(`/mostrar_barrio/`);
+                    console.log(response);
+                    const data = await response.json();
+                    var jsonObject = JSON.parse(data);
+
+
+                    var html = '<div>';
+
+                    for (var barrio in jsonObject) {
+                        html += `
                 <h2>${barrio}</h2>
                 <ul>
             `;
-                    jsonObject[barrio].forEach(museo => {
-                        html += `<li>${museo}</li>`;
-                    });
-                    html += '</ul>';
+                        jsonObject[barrio].forEach(museo => {
+                            html += `<li>${museo}</li>`;
+                        });
+                        html += '</ul>';
+                    }
+                    html += '</div>';
+                    document.getElementById("1").innerHTML = html;
                 }
-                html += '</div>';
-                document.getElementById("1").innerHTML = html;
-            });
+                catch (error) {
+                    console.error("Error al obtener museo:", error);
+                }
+            }
         }
 
 
-        function museoDistrito() {
-            $.get(`http://${serverIP}:${serverPort}/distrito`, function (data) {
-                var jsonObject = JSON.parse(data);
+        async function museoDistrito() {
+            {
+                try {
+                    const response = await fetch(`/mostrar_barrio/`);
+                    console.log(response);
+                    const data = await response.json();
+                    var jsonObject = JSON.parse(data);
 
-                var html = '<div>';
+                    var html = '<div>';
 
-                jsonObject.museos_por_distrito.forEach(function (museo) {
-                    var attributes = museo.attributes;
-                    html += `
+                    jsonObject.museos_por_distrito.forEach(function (museo) {
+                        var attributes = museo.attributes;
+                        html += `
                 <div>
                     <h2>${attributes.NOMBRE}</h2>
                     <p><strong>Nombre de vía:</strong> ${attributes.NOMBRE_VIA}</p>
@@ -82,12 +106,16 @@
                     <p><strong>Email:</strong> ${attributes.EMAIL}</p>
                 </div>
             `;
-                });
+                    });
 
-                html += '</div>';
+                    html += '</div>';
 
-                document.getElementById("1").innerHTML = html;
-            });
+                    document.getElementById("1").innerHTML = html;
+                }
+                catch (error) {
+                    console.error("Error al obtener museo:", error);
+                }
+            };
         }
 
     </script>
