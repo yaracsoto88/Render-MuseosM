@@ -20,7 +20,7 @@
         const serverPort = "8000";
         async function museoRandom() {
             try {
-                const response = await fetch(`/mostrar_museo/`);
+                const response = await fetch(`/random_museo/`);
                 console.log(response);
                 const data = await response.json();
                 var jsonObject = JSON.parse(data);
@@ -53,7 +53,7 @@
         async function agruparPorBarrio() {
             {
                 try {
-                    const response = await fetch(`/mostrar_barrio/`);
+                    const response = await fetch(`/barrios/`);
                     console.log(response);
                     const data = await response.json();
                     var jsonObject = JSON.parse(data);
@@ -84,7 +84,7 @@
         async function museoDistrito() {
             {
                 try {
-                    const response = await fetch(`/mostrar_barrio/`);
+                    const response = await fetch(`/distrito/`);
                     console.log(response);
                     const data = await response.json();
                     var jsonObject = JSON.parse(data);
