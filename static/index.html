@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <title>Museos de Madrid</title>
+</head>
+
+<body>
+
+    <button onclick="museoRandom()">Mostrar museo random</button>
+    <button onclick="agruparPorBarrio()">Agrupar por barrio</button>
+    <button onclick="museoDistrito()">Mostrar museos de un mismo distrito</button>
+    <p id="1"></p>
+
+    <script>
+        const serverIP = "37.133.180.206";
+        const serverPort = "8000";
+
+        function museoRandom() {
+            $.get(`http://${serverIP}:${serverPort}/random_museo`, function (data) {
+                var jsonObject = JSON.parse(data);
+                var html = `
+            <div>
+                <h2>${jsonObject.attributes.NOMBRE}</h2>
+                <p><strong>Nombre de vía:</strong> ${jsonObject.attributes.NOMBRE_VIA}</p>
+                <p><strong>Número:</strong> ${jsonObject.attributes.NUM}</p>
+                <p><strong>Localidad:</strong> ${jsonObject.attributes.LOCALIDAD}</p>
+                <p><strong>Código Postal:</strong> ${jsonObject.attributes.CODIGO_POSTAL}</p>
+                <p><strong>Barrio:</strong> ${jsonObject.attributes.BARRIO}</p>
+                <p><strong>Distrito:</strong> ${jsonObject.attributes.DISTRITO}</p>
+                <p><strong>Teléfono:</strong> ${jsonObject.attributes.TELEFONO}</p>
+                <p><strong>Email:</strong> ${jsonObject.attributes.EMAIL}</p>
+            </div>
+        `;
+
+                document.getElementById("1").innerHTML = html;
+            });
+        }
+
+        function agruparPorBarrio() {
+            $.get(`http://${serverIP}:${serverPort}/barrios`, function (data) {
+                var jsonObject = JSON.parse(data);
+                var html = '<div>';
+
+                for (var barrio in jsonObject) {
+                    html += `
+                <h2>${barrio}</h2>
+                <ul>
+            `;
+                    jsonObject[barrio].forEach(museo => {
+                        html += `<li>${museo}</li>`;
+                    });
+                    html += '</ul>';
+                }
+                html += '</div>';
+                document.getElementById("1").innerHTML = html;
+            });
+        }
+
+
+        function museoDistrito() {
+            $.get(`http://${serverIP}:${serverPort}/distrito`, function (data) {
+                var jsonObject = JSON.parse(data);
+
+                var html = '<div>';
+
+                jsonObject.museos_por_distrito.forEach(function (museo) {
+                    var attributes = museo.attributes;
+                    html += `
+                <div>
+                    <h2>${attributes.NOMBRE}</h2>
+                    <p><strong>Nombre de vía:</strong> ${attributes.NOMBRE_VIA}</p>
+                    <p><strong>Número:</strong> ${attributes.NUM}</p>
+                    <p><strong>Localidad:</strong> ${attributes.LOCALIDAD}</p>
+                    <p><strong>Código Postal:</strong> ${attributes.CODIGO_POSTAL}</p>
+                    <p><strong>Barrio:</strong> ${attributes.BARRIO}</p>
+                    <p><strong>Distrito:</strong> ${attributes.DISTRITO}</p>
+                    <p><strong>Teléfono:</strong> ${attributes.TELEFONO}</p>
+                    <p><strong>Email:</strong> ${attributes.EMAIL}</p>
+                </div>
+            `;
+                });
+
+                html += '</div>';
+
+                document.getElementById("1").innerHTML = html;
+            });
+        }
+
+    </script>
+</body>
+
+</html>
